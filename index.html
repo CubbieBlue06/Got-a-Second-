@@ -250,7 +250,7 @@
                         <div id="stamina-bar"></div>
                     </div>
                 </div>
-                <span id="score-display">Sightings: 0 / 5</span>
+                <span id="score-display">Sightings: 0 / 6</span>
             </div>
 
             <canvas id="gameCanvas" width="800" height="500"></canvas>
@@ -262,7 +262,7 @@
                     <p>🥾 <strong>Stay on the Trail:</strong> You cannot step off the dirt path onto the grass!</p>
                     <p>⚠️ <strong>Wildlife Hazards:</strong> Avoid moving animals or restart at the trailhead!</p>
                     <p>🪵 <strong>Avoid Mud & Logs:</strong> Mud slows you down; logs block movement.</p>
-                    <p>🌼 Collect <strong>5 Trail Sightings</strong> to replenish stamina.</p>
+                    <p>🌼 Collect <strong>Trail Sightings</strong> to replenish stamina.</p>
                     <p>🕹️ <strong>Controls:</strong> On-screen buttons or Arrow Keys/WASD.</p>
                 </div>
                 <button class="btn" onclick="startGame()">Start Expedition</button>
@@ -343,12 +343,14 @@
             { x: 600, y: 390, w: 40, h: 20, type: 'mud' }
         ];
 
+        // 6 Total Collectibles (1 additional refresh dot added along the mid-to-late trail section)
         const collectibles = [
             { x: 220, y: 460, collected: false },
             { x: 120, y: 280, collected: false },
             { x: 380, y: 160, collected: false },
             { x: 480, y: 400, collected: false },
-            { x: 680, y: 200, collected: false }
+            { x: 680, y: 300, collected: false }, // Additional refresh dot
+            { x: 680, y: 180, collected: false }
         ];
 
         const waterfallZone = { x: 670, y: 20, w: 110, h: 100 };
@@ -449,11 +451,11 @@
                     
                     if (obs.type === 'mud') {
                         currentSpeed *= 0.4;
-                        player.stamina -= 0.05;
+                        player.stamina -= 0.035;
                     } else if (obs.type === 'log') {
                         dx *= 0.1;
                         dy *= 0.1;
-                        player.stamina -= 0.1;
+                        player.stamina -= 0.07;
                     }
                 }
             }
@@ -472,7 +474,8 @@
             if (canMoveX) player.x = nextX;
             if (canMoveY) player.y = nextY;
 
-            player.stamina -= 0.035;
+            // Depletion rate reduced by exactly 30% (from 0.035 to 0.0245)
+            player.stamina -= 0.0245;
 
             for (let animal of wildlife) {
                 animal.x += animal.vx;
